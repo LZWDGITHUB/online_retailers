@@ -10,15 +10,21 @@
         <el-input v-model="form.username" placeholder="账户" prefix-icon="myicon myicon-user"></el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model="form.password" placeholder="密码" prefix-icon="myicon myicon-key"></el-input>
+        <el-input
+          v-model="form.password"
+          placeholder="密码"
+          prefix-icon="myicon myicon-key"
+          type="password"
+        ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" class="login-btn">登陆</el-button>
+        <el-button type="primary" class="login-btn" @click="loginSubmit('form')">登陆</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 <script>
+import {checkUser} from '@/api/index.js'
 export default {
   data() {
     return {
@@ -28,15 +34,35 @@ export default {
       },
       rules: {
         username: [
-          { required: true, message: "请输入用户名称", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
+          { required: true, message: "请输入用户名称", trigger: "blur" }
         ],
         password: [
-          { required: true, message: "请输入用户密码", trigger: "blur" },
-          { min: 6, max: 12, message: "长度在 6 到 12 个字符", trigger: "blur" }
+          { required: true, message: "请输入用户密码", trigger: "blur" }
         ]
       }
     };
+  },
+  methods: {
+    loginSubmit (formName) {
+      this.$refs[formName].validate(valide => {
+        //只有校验通过，才执行函数
+        if (valide) {
+          checkUser(this.form).then(res => {
+            //如果成功要跳转至首页
+            if (res.meta.status === 200) {
+              this.$router.push({name: 'Home'})
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.meta.msg
+              });
+            }
+          });
+        } else {
+          window.console.log("校验不通过");
+        }
+      });
+    }
   }
 };
 </script>
