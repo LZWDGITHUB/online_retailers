@@ -1,13 +1,15 @@
 <template>
   <div class="home">
     <el-container>
-      <el-aside width="200px">
+      <!-- 侧边栏 -->
+      <el-aside width="auto">
         <div class="logo"></div>
         <el-menu
           default-active="1-1"
           class="el-menu-admin"
           @open="handleOpen"
           @close="handleClose"
+          :collapse="isCollapse"
           background-color="#545c64"
           text-color="#fff"
           active-text-color="#ffd04b"
@@ -24,9 +26,26 @@
           </el-submenu>
         </el-menu>
       </el-aside>
+      <!-- 中间部分 -->
       <el-container>
-        <el-header>Header</el-header>
-        <el-main>Main</el-main>
+        <!-- 头部 -->
+        <el-header>
+          <!-- ' ' -->
+          <i
+            :class="isCollapse?'el-icon-s-unfold':'el-icon-s-fold'"
+            class="toggle-btn"
+            @click="toggleCollapse"
+          ></i>
+          <div class="system-title">我的电商管理系统啊</div>
+          <div>
+            <span class="welcome">你好，xxx</span>
+            <el-button type="text" @click="logout">退出</el-button>
+          </div>
+        </el-header>
+        <!-- 内容部分 -->
+        <el-main>
+          <router-view></router-view>
+        </el-main>
       </el-container>
     </el-container>
   </div>
@@ -34,6 +53,11 @@
 <script>
 import { getUserList } from "@/api/index.js";
 export default {
+  data() {
+    return {
+      isCollapse: false
+    };
+  },
   mounted() {
     let params = { params: { query: "", pagenum: 1, pagesize: 1 } };
     getUserList(params).then(res => {
@@ -46,6 +70,15 @@ export default {
     },
     handleClose(key, keyPath) {
       window.console.log(key, keyPath);
+    },
+    toggleCollapse() {
+      this.isCollapse = !this.isCollapse;
+    },
+    logout() {
+      //清除登陆状态，即保存在localStorage中的token
+      localStorage.removeItem("mytoken");
+      //跳转到登陆页面
+      this.$router.push({ name: "Login" });
     }
   }
 };
