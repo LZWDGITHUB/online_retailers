@@ -38,7 +38,7 @@
           ></i>
           <div class="system-title">我的电商管理系统啊</div>
           <div>
-            <span class="welcome">你好，xxx</span>
+            <span class="welcome">你好，{{$store.getters.username}}</span>
             <el-button type="text" @click="logout">退出</el-button>
           </div>
         </el-header>
