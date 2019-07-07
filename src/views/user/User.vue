@@ -13,8 +13,14 @@
     <!-- 搜索框 -->
     <el-row class="el-tob-bottom">
       <el-col :span="24">
-        <el-input placeholder="请输入内容" class="search-input">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+        <!-- 给组件绑定原生事件的话，需要一个.native的修饰符 -->
+        <el-input
+          placeholder="请输入内容"
+          class="search-input"
+          v-model="query"
+          @keydown.native.enter="initList"
+        >
+          <el-button slot="append" icon="el-icon-search" @click="initList"></el-button>
         </el-input>
         <el-button type="success" plain class="search-button">添加用户</el-button>
       </el-col>
@@ -45,39 +51,47 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="1"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :page-sizes="[1, 2, 3, 4]"
+        :page-size="1"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="total"
       ></el-pagination>
     </div>
   </div>
 </template>
 
 <script>
-import {getUserList} from '@/api'
+import { getUserList } from "@/api";
 export default {
   data() {
     return {
-      userList: []
-    }
+      userList: [],
+      query: '',
+      total: 0,
+      pagesize: 1,
+      pagenum: 1
+    };
   },
-  created () {
-      this.initList()
+  created() {
+    this.initList();
   },
   methods: {
-    handleSizeChange (val) {
-      window.console.log(`每页 ${val} 条`)
+    handleSizeChange(val) {
+      this.pagesize = val
+      this.initList()
     },
-    handleCurrentChange (val) {
-      window.console.log(`当前页: ${val}`)
+    handleCurrentChange(val) {
+      this.pagenum = val
+      this.initList()
     },
     //初始化表格数据
-    initList () {
-        getUserList({params: {query:'',pagenum: 1,pagesize: 3}}).then(res => {
-            window.console.log(res)
-            this.userList = res.data.users
-        })
+    initList() {
+      getUserList({
+        params: { query: this.query, pagenum: this.pagenum, pagesize: this.pagesize }
+      }).then(res => {
+        this.userList = res.data.users;
+        this.total = res.data.total
+      });
     }
   }
 };
@@ -88,7 +102,7 @@ export default {
     margin-bottom: 0px;
   }
   .el-tob-bottom {
-      margin: 2px 0px;
+    margin: 2px 0px;
   }
   .search-input {
     width: 300px;

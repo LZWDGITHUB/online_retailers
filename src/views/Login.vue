@@ -12,9 +12,10 @@
       <el-form-item prop="password">
         <el-input
           v-model="form.password"
-          placeholder="密码"
+          placeholder="密码" 
           prefix-icon="myicon myicon-key"
           type="password"
+          @keydown.native.enter="loginSubmit('form')"
         ></el-input>
       </el-form-item>
       <el-form-item>
