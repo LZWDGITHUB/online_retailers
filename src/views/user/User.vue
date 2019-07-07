@@ -20,14 +20,14 @@
       </el-col>
     </el-row>
     <!-- 表格 -->
-    <el-table :data="tableData" border style="width: 100%">
+    <el-table :data="userList" border style="width: 100%">
       <el-table-column type="index" width="50"></el-table-column>
-      <el-table-column prop="name" label="姓名" width="180"></el-table-column>
-      <el-table-column prop="name" label="邮箱"></el-table-column>
-      <el-table-column prop="name" label="电话"></el-table-column>
+      <el-table-column prop="username" label="姓名" width="180"></el-table-column>
+      <el-table-column prop="email" label="邮箱"></el-table-column>
+      <el-table-column prop="mobile" label="电话"></el-table-column>
       <el-table-column label="用户状态" width="80">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.value" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="180">
@@ -55,28 +55,15 @@
 </template>
 
 <script>
+import {getUserList} from '@/api'
 export default {
   data() {
     return {
-      tableData: [
-        {
-          name: "王小虎",
-          value: true
-        },
-        {
-          name: "王小虎",
-          value: true
-        },
-        {
-          name: "王小虎",
-          value: true
-        },
-        {
-          name: "王小虎",
-          value: false
-        }
-      ]
+      userList: []
     }
+  },
+  created () {
+      this.initList()
   },
   methods: {
     handleSizeChange (val) {
@@ -84,6 +71,13 @@ export default {
     },
     handleCurrentChange (val) {
       window.console.log(`当前页: ${val}`)
+    },
+    //初始化表格数据
+    initList () {
+        getUserList({params: {query:'',pagenum: 1,pagesize: 3}}).then(res => {
+            window.console.log(res)
+            this.userList = res.data.users
+        })
     }
   }
 };

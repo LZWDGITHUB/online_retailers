@@ -19,7 +19,7 @@ axios.interceptors.request.use(function (config) {
 export const checkUser = params => {
     return axios.post('login',params).then(res => res.data)
 }
-//登陆验证
+//获取用户数据列表
 export const getUserList = params => {
     return axios.get('users',params).then(res => res.data)
 }
