@@ -22,7 +22,12 @@
         >
           <el-button slot="append" icon="el-icon-search" @click="initList"></el-button>
         </el-input>
-        <el-button type="success" plain class="search-button">添加用户</el-button>
+        <el-button
+          type="success"
+          plain
+          class="search-button"
+          @click="addDialogFormVisible = true"
+        >添加用户</el-button>
       </el-col>
     </el-row>
     <!-- 表格 -->
@@ -33,7 +38,12 @@
       <el-table-column prop="mobile" label="电话"></el-table-column>
       <el-table-column label="用户状态" width="80">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          <el-switch
+            v-model="scope.row.mg_state"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="changeUserState(scope.row)"
+          ></el-switch>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="180">
@@ -51,25 +61,69 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="1"
-        :page-sizes="[1, 2, 3, 4]"
-        :page-size="1"
+        :page-sizes="[1, 2, 3, 4, 5]"
+        :page-size="5"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       ></el-pagination>
     </div>
+    <!-- 新增用户 -->
+    <el-dialog title="收货地址" :visible.sync="addDialogFormVisible">
+      <el-form :model="addForm" label-width="80px" :rules="rules" ref="addUserForm">
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="addForm.username" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="addForm.password" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="addForm.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" prop="mobile">
+          <el-input v-model="addForm.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addUserSubmit('addUserForm')">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getUserList } from "@/api";
+import { getUserList, changeUserState, addUser } from "@/api";
 export default {
   data() {
     return {
       userList: [],
-      query: '',
+      query: "",
       total: 0,
-      pagesize: 1,
-      pagenum: 1
+      pagenum: 1,
+      pagesize: 5,
+      addDialogFormVisible: false,
+      addForm: {
+        username: "",
+        password: "",
+        email: "",
+        mobile: ""
+      },
+      // 添加用户的表单验证
+      rules: {
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" }
+        ],
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        email: [
+          { required: true, message: "请输入邮箱地址", trigger: "blur" },
+          {
+            type: "email",
+            message: "请输入正确的邮箱地址",
+            trigger: "blur,change"
+          }
+        ],
+        mobile: [{ required: true, message: "电话不能为空" }]
+      }
     };
   },
   created() {
@@ -77,21 +131,60 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
-      this.pagesize = val
-      this.initList()
+      this.pagesize = val;
+      this.initList();
     },
     handleCurrentChange(val) {
-      this.pagenum = val
-      this.initList()
+      this.pagenum = val;
+      this.initList();
     },
     //初始化表格数据
     initList() {
       getUserList({
-        params: { query: this.query, pagenum: this.pagenum, pagesize: this.pagesize }
+        params: {
+          query: this.query,
+          pagenum: this.pagenum,
+          pagesize: this.pagesize
+        }
       }).then(res => {
         this.userList = res.data.users;
-        this.total = res.data.total
+        this.total = res.data.total;
       });
+    },
+    //改变用户状态
+    changeUserState(row) {
+      window.console.log(row);
+      changeUserState({ uid: row.id, type: row.mg_state }).then(res => {
+        if (res.meta.status === 200) {
+          this.$message({
+            type: "success",
+            message: "修改用户状态成功"
+          });
+        } else {
+          this.$message({
+            type: "error",
+            message: res.meta.msg
+          });
+        }
+      });
+    },
+    //添加用户
+    addUserSubmit (formName) {
+      this.$refs[formName].validate(valide => {
+        if (valide) {
+          //执行添加用户方法
+          addUser(this.addForm).then(res => {
+            if (res.meta.status === 201) {
+              this.$message({
+                type: 'success',
+                message: '创建用户成功'
+              })
+            }
+            this.addDialogFormVisible = false
+            this.initList()
+          })
+        }
+      })
     }
   }
 };
