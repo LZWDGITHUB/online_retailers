@@ -56,7 +56,13 @@
             plain
             @click="showEditDialog(scope.row)"
           ></el-button>
-          <el-button type="danger" icon="el-icon-delete" size="small" plain></el-button>
+          <el-button
+            type="danger"
+            icon="el-icon-delete"
+            size="small"
+            plain
+            @click="showDeleteDialog(scope.row)"
+          ></el-button>
           <el-button type="warning" icon="el-icon-check" size="small" plain></el-button>
         </template>
       </el-table-column>
@@ -116,7 +122,14 @@
 </template>
 
 <script>
-import { getUserList, changeUserState, addUser, getUserById, editUser } from "@/api";
+import {
+  getUserList,
+  changeUserState,
+  addUser,
+  getUserById,
+  editUser,
+  deleteUser
+} from "@/api";
 export default {
   data() {
     return {
@@ -155,19 +168,19 @@ export default {
         ],
         mobile: [{ required: true, message: "电话不能为空" }]
       }
-    }
+    };
   },
   created() {
-    this.initList()
+    this.initList();
   },
   methods: {
     handleSizeChange(val) {
-      this.pagesize = val
-      this.initList()
+      this.pagesize = val;
+      this.initList();
     },
     handleCurrentChange(val) {
-      this.pagenum = val
-      this.initList()
+      this.pagenum = val;
+      this.initList();
     },
     //初始化表格数据
     initList() {
@@ -178,9 +191,9 @@ export default {
           pagesize: this.pagesize
         }
       }).then(res => {
-        this.userList = res.data.users
-        this.total = res.data.total
-      })
+        this.userList = res.data.users;
+        this.total = res.data.total;
+      });
     },
     //改变用户状态
     changeUserState(row) {
@@ -189,14 +202,14 @@ export default {
           this.$message({
             type: "success",
             message: "修改用户状态成功"
-          })
+          });
         } else {
           this.$message({
             type: "error",
             message: res.meta.msg
-          })
+          });
         }
-      })
+      });
     },
     //添加用户
     addUserSubmit(formName) {
@@ -208,25 +221,25 @@ export default {
               this.$message({
                 type: "success",
                 message: "创建用户成功"
-              })
+              });
             }
-            this.addDialogFormVisible = false
-            this.initList()
-          })
+            this.addDialogFormVisible = false;
+            this.initList();
+          });
         }
-      })
+      });
     },
     //显示编辑用户对话框
     showEditDialog(row) {
       this.editDialogFormVisible = true;
       getUserById(row.id).then(res => {
         if (res.meta.status === 200) {
-          this.editForm.username = res.data.username
-          this.editForm.email = res.data.email
-          this.editForm.mobile = res.data.mobile
-          this.editForm.id = res.data.id
+          this.editForm.username = res.data.username;
+          this.editForm.email = res.data.email;
+          this.editForm.mobile = res.data.mobile;
+          this.editForm.id = res.data.id;
         }
-      })
+      });
     },
     //编辑用户提交
     editUserSubmit(formName) {
@@ -238,13 +251,38 @@ export default {
               this.$message({
                 type: "success",
                 message: "编辑用户成功"
-              })
+              });
             }
             this.editDialogFormVisible = false;
             this.initList();
-          })
+          });
         }
+      });
+    },
+    //显示删除对话框
+    showDeleteDialog(row) {
+      this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
+        .then(() => {
+          deleteUser(row.id).then(res => {
+            if (res.meta.status === 200) {
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+              this.initList();
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     }
   }
 };
