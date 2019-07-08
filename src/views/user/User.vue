@@ -5,7 +5,7 @@
       <el-col :span="24">
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+          <el-breadcrumb-item><a href="javascript:;">用户管理</a></el-breadcrumb-item>
           <el-breadcrumb-item>用户列表</el-breadcrumb-item>
         </el-breadcrumb>
       </el-col>
@@ -353,12 +353,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .user {
-  .el-breadcrumb {
-    margin-bottom: 0px;
-  }
-  .el-tob-bottom {
-    margin: 2px 0px;
-  }
   .search-input {
     width: 300px;
   }
