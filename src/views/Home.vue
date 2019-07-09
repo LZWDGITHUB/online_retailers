@@ -15,29 +15,14 @@
           text-color="#fff"
           active-text-color="#ffd04b"
         >
-          <el-submenu index="1">
+          <el-submenu :index="item.path" v-for="item in menuData" :key="item.id">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span>用户管理</span>
+              <span>{{item.authName}}</span>
             </template>
-            <el-menu-item index="/user">
+            <el-menu-item :index="tag.path" v-for="tag in item.children" :key="tag.id">
               <i class="el-icon-menu"></i>
-              <span slot="title">用户列表</span>
-            </el-menu-item>
-          </el-submenu>
-
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>权限管理</span>
-            </template>
-            <el-menu-item index="/roles">
-              <i class="el-icon-menu"></i>
-              <span slot="title">角色列表</span>
-            </el-menu-item>
-            <el-menu-item index="/rights">
-              <i class="el-icon-menu"></i>
-              <span slot="title">权限列表</span>
+              <span slot="title">{{tag.authName}}</span>
             </el-menu-item>
           </el-submenu>
         </el-menu>
@@ -67,17 +52,25 @@
   </div>
 </template>
 <script>
-import { getUserList } from "@/api/index.js";
+import { getUserList, getMenus } from "@/api/index.js";
 export default {
   data() {
     return {
-      isCollapse: false
+      isCollapse: false,
+      menuData: []
     };
+  },
+  created() {
+    getMenus().then(res => {
+      if (res.meta.status === 200) {
+        window.console.log(res.data);
+        this.menuData = res.data;
+      }
+    });
   },
   mounted() {
     let params = { params: { query: "", pagenum: 1, pagesize: 1 } };
-    getUserList(params).then(() => {
-    });
+    getUserList(params).then(() => {});
   },
   methods: {
     handleOpen(key, keyPath) {

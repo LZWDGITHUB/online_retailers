@@ -79,3 +79,7 @@ export const editRoles = params => {
 export const deleteRoles = params => {
   return axios.delete(`roles/${params}`).then(res => res.data)
 }
+//左侧菜单权限
+export const getMenus = () => {
+  return axios.get('menus').then(res => res.data)
+}
