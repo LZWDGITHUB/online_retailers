@@ -76,8 +76,7 @@ export default {
   },
   mounted() {
     let params = { params: { query: "", pagenum: 1, pagesize: 1 } };
-    getUserList(params).then(res => {
-      window.console.log(res);
+    getUserList(params).then(() => {
     });
   },
   methods: {

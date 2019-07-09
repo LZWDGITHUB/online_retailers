@@ -59,3 +59,23 @@ export const getRightList = params => {
 export const deleteRoleRight = params => {
   return axios.delete(`roles/${params.roleId}/rights/${params.rightId}`).then(res => res.data)
 }
+//角色授权
+export const grantRoleRight = (roleId,rids) => {
+  return axios.post(`roles/${roleId}/rights`, rids).then(res => res.data)
+}
+//添加角色
+export const addRoles = params => {
+  return axios.post('roles', params).then(res => res.data)
+}
+//根据id获取角色信息
+export const getRolesById = params => {
+  return axios.get(`roles/${params}`).then(res => res.data)
+}
+//编辑角色
+export const editRoles = params => {
+  return axios.put(`roles/${params.id}`, params).then(res => res.data)
+}
+//删除角色
+export const deleteRoles = params => {
+  return axios.delete(`roles/${params}`).then(res => res.data)
+}

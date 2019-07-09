@@ -54,6 +54,7 @@
             icon="el-icon-edit"
             size="small"
             plain
+            title="编辑用户"
             @click="showEditDialog(scope.row)"
           ></el-button>
           <el-button
@@ -61,6 +62,7 @@
             icon="el-icon-delete"
             size="small"
             plain
+            title="删除用户"
             @click="showDeleteDialog(scope.row)"
           ></el-button>
           <el-button
@@ -68,6 +70,7 @@
             icon="el-icon-check"
             size="small"
             plain
+            title="分配角色"
             @click="showGrantDialog(scope.row)"
           ></el-button>
         </template>

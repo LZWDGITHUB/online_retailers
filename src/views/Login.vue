@@ -62,7 +62,7 @@ export default {
             }
           });
         } else {
-          window.console.log("校验不通过");
+          //window.console.log("校验不通过");
         }
       });
     }
