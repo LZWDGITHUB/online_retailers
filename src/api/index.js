@@ -83,3 +83,27 @@ export const deleteRoles = params => {
 export const getMenus = () => {
   return axios.get('menus').then(res => res.data)
 }
+//获取商品分类信息
+export const getCategories = params => {
+  return axios.get('categories',{params:params}).then(res => res.data)
+}
+//添加商品分类
+export const addCategories = params => {
+  return axios.post('categories',params).then(res => res.data)
+}
+//根据id查询商品分类
+export const getCategoriesById = params => {
+  return axios.get(`categories/${params}`).then(res => res.data)
+}
+//编辑商品分类
+export const editCategories = params => {
+  return axios.put(`categories/${params.id}`, params).then(res => res.data)
+}
+//删除商品分类
+export const deleteCategories = params => {
+  return axios.delete(`categories/${params}`).then(res => res.data)
+}
+//获取用户数据列表
+export const getGoodsList = params => {
+    return axios.get('goods',params).then(res => res.data)
+}

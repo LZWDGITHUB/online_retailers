@@ -44,7 +44,7 @@
           </div>
         </el-header>
         <!-- 内容部分 -->
-        <el-main>
+        <el-main class="el-main">
           <router-view></router-view>
         </el-main>
       </el-container>
@@ -63,7 +63,7 @@ export default {
   created() {
     getMenus().then(res => {
       if (res.meta.status === 200) {
-        window.console.log(res.data);
+        // window.console.log(res.data);
         this.menuData = res.data;
       }
     });
@@ -131,6 +131,9 @@ export default {
   }
   .welcome {
     color: white;
+  }
+  .el-main {
+    background-color: #e8eef3;
   }
 }
 </style>
